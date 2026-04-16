@@ -1,0 +1,195 @@
+/**
+ * 阅读历史记录组件样式
+ * Reading History Component Styles
+ */
+
+/* 历史记录容器 */
+.history {
+  width: 100%;
+}
+
+/* 历史记录头部 */
+.history__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.history__title {
+  font-size: var(--font-size-lg);
+  margin: 0;
+}
+
+/* 清空历史按钮 */
+.history__clear-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.history__clear-btn:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background-color: rgba(231, 76, 60, 0.05);
+}
+
+.history__clear-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* 历史记录列表 */
+.history__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* 历史记录项 */
+.history__item {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+  transition: background-color var(--transition-fast);
+  text-decoration: none;
+  color: inherit;
+}
+
+.history__item:hover {
+  background-color: var(--color-bg-secondary);
+}
+
+.history__item-image {
+  width: 60px;
+  height: 45px;
+  border-radius: var(--border-radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.history__item-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--spacing-xs);
+}
+
+.history__item-title {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+}
+
+.history__item:hover .history__item-title {
+  color: var(--color-primary);
+}
+
+.history__item-time {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.history__item-time svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* 空状态 */
+.history__empty {
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-md);
+  color: var(--color-text-muted);
+}
+
+.history__empty-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--spacing-md);
+  opacity: 0.3;
+}
+
+.history__empty-text {
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+/* 侧边栏中的历史记录 */
+.sidebar__history {
+  margin-top: var(--spacing-sm);
+}
+
+.sidebar__history .history__list {
+  gap: var(--spacing-sm);
+}
+
+.sidebar__history .history__item {
+  padding: var(--spacing-xs);
+}
+
+.sidebar__history .history__item-image {
+  width: 50px;
+  height: 38px;
+}
+
+.sidebar__history .history__item-title {
+  font-size: var(--font-size-xs);
+  -webkit-line-clamp: 2;
+}
+
+.sidebar__history .history__item-time {
+  font-size: 11px;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .history__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .history__clear-btn {
+    align-self: flex-end;
+  }
+
+  .history__item-image {
+    width: 50px;
+    height: 38px;
+  }
+
+  .history__item-title {
+    font-size: var(--font-size-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .history__item {
+    gap: var(--spacing-sm);
+  }
+
+  .history__item-image {
+    width: 45px;
+    height: 34px;
+  }
+}
