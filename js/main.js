@@ -2,22 +2,23 @@
  * 主入口文件
  * 初始化所有模块
  */
-import { Carousel } from './modules/carousel.js';
-import { Navigation } from './modules/navigation.js';
-import { Search } from './modules/search.js';
-import { Pagination } from './modules/pagination.js';
-import { TableOfContents } from './modules/toc.js';
-import { BackToTop } from './modules/back-to-top.js';
-import { ThemeToggle } from './modules/theme.js';
-import { LazyLoad } from './modules/lazyload.js';
-import { Skeleton } from './modules/skeleton.js';
+import { Carousel } from '../modules/carousel.js';
+import { Navigation } from '../modules/navigation.js';
+import { Search } from '../modules/search.js';
+import { Pagination } from '../modules/pagination.js';
+import { TableOfContents } from '../modules/toc.js';
+import { BackToTop } from '../modules/back-to-top.js';
+import { ThemeToggle } from '../modules/theme.js';
+import { LazyLoad } from '../modules/lazyload.js';
+import { Skeleton } from '../modules/skeleton.js';
 import { articles, getArticles, getArticleById, getRelatedArticles, categories, tags, recommendedArticles } from './data.js';
 
 const APP_STATE = {
   currentPage: 1,
   currentCategory: null,
   currentTag: null,
-  searchKeyword: null
+  searchKeyword: null,
+  paginationInstance: null
 };
 
 /**
@@ -172,7 +173,7 @@ function renderSidebar() {
         <img src="${article.image}" alt="${article.title}" class="sidebar__recommended-image" loading="lazy">
         <div class="sidebar__recommended-content">
           <h4 class="sidebar__recommended-title">
-            <a href="${article.url}">${article.title}</a>
+            <a href="${getArticleUrl(article.url)}">${article.title}</a>
           </h4>
           <span class="sidebar__recommended-date">${article.date}</span>
         </div>
@@ -188,6 +189,7 @@ function renderSidebar() {
 function renderArticlesList() {
   const container = document.querySelector('.page-articles__list');
   const paginationContainer = document.querySelector('.pagination');
+  const articleCount = document.getElementById('article-count');
   
   if (!container) return;
   
@@ -202,16 +204,27 @@ function renderArticlesList() {
   const html = result.data.map(article => createArticleCardHorizontal(article)).join('');
   container.innerHTML = html;
   
+  if (articleCount) {
+    articleCount.textContent = result.total;
+  }
+  
   if (paginationContainer) {
-    new Pagination(paginationContainer, {
-      totalItems: result.total,
-      itemsPerPage: 10,
-      currentPage: APP_STATE.currentPage
-    }, (page) => {
-      APP_STATE.currentPage = page;
-      renderArticlesList();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    if (APP_STATE.paginationInstance) {
+      APP_STATE.paginationInstance.update({
+        totalItems: result.total,
+        currentPage: APP_STATE.currentPage
+      });
+    } else {
+      APP_STATE.paginationInstance = new Pagination(paginationContainer, {
+        totalItems: result.total,
+        itemsPerPage: 10,
+        currentPage: APP_STATE.currentPage
+      }, (page) => {
+        APP_STATE.currentPage = page;
+        renderArticlesList();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
   }
   
   new LazyLoad();
@@ -428,6 +441,19 @@ function animateSkillBars() {
 }
 
 /**
+ * 获取正确的文章URL路径
+ * @param {string} url - 原始URL
+ * @returns {string} 修正后的URL
+ */
+function getArticleUrl(url) {
+  const isInPagesDirectory = window.location.pathname.includes('/pages/');
+  if (isInPagesDirectory) {
+    return url.replace('pages/', '');
+  }
+  return url;
+}
+
+/**
  * 创建文章卡片 HTML
  * @param {Object} article - 文章数据
  * @returns {string} HTML 字符串
@@ -441,7 +467,7 @@ function createArticleCard(article) {
       <div class="card__body">
         <span class="card__category">${article.category}</span>
         <h3 class="card__title">
-          <a href="${article.url}">${article.title}</a>
+          <a href="${getArticleUrl(article.url)}">${article.title}</a>
         </h3>
         <p class="card__excerpt">${article.excerpt}</p>
         <div class="card__meta">
@@ -481,7 +507,7 @@ function createArticleCardHorizontal(article) {
       <div class="card__body">
         <span class="card__category">${article.category}</span>
         <h3 class="card__title">
-          <a href="${article.url}">${article.title}</a>
+          <a href="${getArticleUrl(article.url)}">${article.title}</a>
         </h3>
         <p class="card__excerpt">${article.excerpt}</p>
         <div class="card__meta">

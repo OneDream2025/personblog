@@ -119,6 +119,19 @@ export class Search {
   }
   
   /**
+   * 获取正确的文章URL路径
+   * @param {string} url - 原始URL
+   * @returns {string} 修正后的URL
+   */
+  getArticleUrl(url) {
+    const isInPagesDirectory = window.location.pathname.includes('/pages/');
+    if (isInPagesDirectory) {
+      return url.replace('pages/', '');
+    }
+    return url;
+  }
+
+  /**
    * 渲染搜索结果
    * @param {Array} results - 搜索结果数组
    * @param {string} query - 搜索关键词
@@ -134,7 +147,7 @@ export class Search {
     }
     
     const html = results.map(article => `
-      <a href="${article.url}" class="search-modal__result">
+      <a href="${this.getArticleUrl(article.url)}" class="search-modal__result">
         <div class="search-modal__result-title">${this.highlightText(article.title, query)}</div>
         <div class="search-modal__result-excerpt">${this.highlightText(article.excerpt, query)}</div>
       </a>

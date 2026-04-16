@@ -37,6 +37,7 @@ export class Carousel {
    */
   init() {
     this.bindEvents();
+    this.goTo(0);
     if (this.options.autoPlay) {
       this.startAutoPlay();
     }
