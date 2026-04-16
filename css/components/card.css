@@ -73,8 +73,15 @@
   font-size: var(--font-size-xs);
 }
 
+.card__meta-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
 .card__date,
-.card__views {
+.card__views,
+.card__likes {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);

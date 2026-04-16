@@ -11,6 +11,8 @@ import { BackToTop } from '../modules/back-to-top.js';
 import { ThemeToggle } from '../modules/theme.js';
 import { LazyLoad } from '../modules/lazyload.js';
 import { Skeleton } from '../modules/skeleton.js';
+import { Like } from '../modules/like.js';
+import { History } from '../modules/history.js';
 import { articles, getArticles, getArticleById, getRelatedArticles, categories, tags, recommendedArticles } from './data.js';
 
 const APP_STATE = {
@@ -18,7 +20,9 @@ const APP_STATE = {
   currentCategory: null,
   currentTag: null,
   searchKeyword: null,
-  paginationInstance: null
+  paginationInstance: null,
+  likeInstance: null,
+  historyInstance: null
 };
 
 /**
@@ -30,6 +34,7 @@ function initApp() {
   initSearch();
   initBackToTop();
   initLazyLoad();
+  initLike();
   
   const pageType = document.body.dataset.page;
   
@@ -98,6 +103,18 @@ function initLazyLoad() {
   new LazyLoad();
 }
 
+let globalLikeInstance = null;
+
+/**
+ * 初始化点赞功能
+ */
+function initLike() {
+  if (!globalLikeInstance) {
+    globalLikeInstance = new Like();
+  }
+  globalLikeInstance.initAllLikes();
+}
+
 /**
  * 初始化首页
  */
@@ -131,6 +148,7 @@ function renderLatestArticles() {
   
   container.innerHTML = html;
   new LazyLoad();
+  initLike();
 }
 
 /**
@@ -148,6 +166,7 @@ function initArticlesPage() {
 function renderSidebar() {
   const categoriesContainer = document.querySelector('.sidebar__categories');
   const tagsContainer = document.querySelector('.sidebar__tags');
+  const historyContainer = document.querySelector('.sidebar__history');
   const recommendedContainer = document.querySelector('.sidebar__recommended');
   
   if (categoriesContainer) {
@@ -167,6 +186,10 @@ function renderSidebar() {
     tagsContainer.innerHTML = html;
   }
   
+  if (historyContainer) {
+    renderHistory(historyContainer);
+  }
+  
   if (recommendedContainer) {
     const html = recommendedArticles.map(article => `
       <div class="sidebar__recommended-item">
@@ -180,6 +203,47 @@ function renderSidebar() {
       </div>
     `).join('');
     recommendedContainer.innerHTML = html;
+  }
+}
+
+/**
+ * 渲染阅读历史记录
+ * @param {HTMLElement} container - 容器元素
+ */
+function renderHistory(container) {
+  if (!APP_STATE.historyInstance) {
+    APP_STATE.historyInstance = new History();
+  }
+
+  const history = APP_STATE.historyInstance.getHistory();
+
+  if (history.length === 0) {
+    container.innerHTML = '<p class="sidebar__history-empty">暂无阅读记录</p>';
+    return;
+  }
+
+  const historyHtml = history.map(item => `
+    <a href="${getArticleUrl(item.url)}" class="sidebar__history-item">
+      <div class="sidebar__history-item-title">${item.title}</div>
+      <div class="sidebar__history-item-time">${APP_STATE.historyInstance.formatRelativeTime(item.timestamp)}</div>
+    </a>
+  `).join('');
+
+  const clearButton = history.length > 0 ? `
+    <div class="sidebar__history-header">
+      <button class="sidebar__history-clear" id="clear-history-btn">清空历史</button>
+    </div>
+  ` : '';
+
+  container.innerHTML = clearButton + historyHtml;
+
+  const clearBtn = document.getElementById('clear-history-btn');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      APP_STATE.historyInstance.clearHistory();
+      renderHistory(container);
+    });
   }
 }
 
@@ -228,6 +292,7 @@ function renderArticlesList() {
   }
   
   new LazyLoad();
+  initLike();
 }
 
 /**
@@ -301,6 +366,11 @@ function initDetailPage() {
   renderArticleDetail(article);
   initTableOfContents();
   renderRelatedArticles(article.id);
+  
+  if (!APP_STATE.historyInstance) {
+    APP_STATE.historyInstance = new History();
+  }
+  APP_STATE.historyInstance.addRecord(article.id, article.title, article.url);
 }
 
 /**
@@ -345,6 +415,16 @@ function renderArticleDetail(article) {
       <div class="article__tags">
         ${article.tags.map(tag => `<span class="article__tag">${tag}</span>`).join('')}
       </div>
+      <div class="article__like">
+        <span class="like like--large" data-like-id="${article.id}">
+          <span class="like__heart">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </span>
+          <span class="like__count">0</span>
+        </span>
+      </div>
     </header>
     <img src="${article.image}" alt="${article.title}" class="article__featured-image" loading="lazy">
     <div class="article__content">
@@ -357,6 +437,7 @@ function renderArticleDetail(article) {
   `;
   
   new LazyLoad();
+  initLike();
 }
 
 /**
@@ -410,6 +491,7 @@ function renderRelatedArticles(articleId) {
   
   container.innerHTML = html;
   new LazyLoad();
+  initLike();
 }
 
 /**
@@ -471,21 +553,31 @@ function createArticleCard(article) {
         </h3>
         <p class="card__excerpt">${article.excerpt}</p>
         <div class="card__meta">
-          <span class="card__date">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            ${article.date}
-          </span>
-          <span class="card__views">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-            ${article.views}
+          <div class="card__meta-left">
+            <span class="card__date">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              ${article.date}
+            </span>
+            <span class="card__views">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              ${article.views}
+            </span>
+          </div>
+          <span class="like" data-like-id="${article.id}">
+            <span class="like__heart">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </span>
+            <span class="like__count">0</span>
           </span>
         </div>
       </div>
@@ -511,21 +603,31 @@ function createArticleCardHorizontal(article) {
         </h3>
         <p class="card__excerpt">${article.excerpt}</p>
         <div class="card__meta">
-          <span class="card__date">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            ${article.date}
-          </span>
-          <span class="card__views">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-            ${article.views}
+          <div class="card__meta-left">
+            <span class="card__date">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              ${article.date}
+            </span>
+            <span class="card__views">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              ${article.views}
+            </span>
+          </div>
+          <span class="like" data-like-id="${article.id}">
+            <span class="like__heart">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </span>
+            <span class="like__count">0</span>
           </span>
         </div>
       </div>
