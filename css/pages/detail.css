@@ -1,0 +1,24 @@
+.page-detail {
+  display: flex;
+  gap: var(--spacing-2xl);
+}
+
+.page-detail__main {
+  flex: 1;
+  max-width: 100%;
+}
+
+.page-detail__sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+}
+
+@media (max-width: 1024px) {
+  .page-detail {
+    flex-direction: column;
+  }
+
+  .page-detail__sidebar {
+    width: 100%;
+  }
+}

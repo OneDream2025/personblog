@@ -1,0 +1,102 @@
+.search-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-overlay);
+  z-index: var(--z-index-modal);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 100px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-normal), visibility var(--transition-normal);
+}
+
+.search-modal--open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.search-modal__content {
+  width: 100%;
+  max-width: 600px;
+  background-color: var(--color-bg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-20px);
+  transition: transform var(--transition-normal);
+}
+
+.search-modal--open .search-modal__content {
+  transform: translateY(0);
+}
+
+.search-modal__header {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.search-modal__input {
+  flex: 1;
+  border: none;
+  font-size: var(--font-size-lg);
+  padding: var(--spacing-sm);
+  background: transparent;
+}
+
+.search-modal__input:focus {
+  box-shadow: none;
+}
+
+.search-modal__close {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.search-modal__close:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
+}
+
+.search-modal__results {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.search-modal__result {
+  display: block;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color var(--transition-fast);
+}
+
+.search-modal__result:hover {
+  background-color: var(--color-bg-secondary);
+}
+
+.search-modal__result-title {
+  font-weight: 500;
+  margin-bottom: var(--spacing-xs);
+}
+
+.search-modal__result-excerpt {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.search-modal__empty {
+  padding: var(--spacing-2xl);
+  text-align: center;
+  color: var(--color-text-muted);
+}

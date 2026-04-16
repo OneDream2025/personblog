@@ -1,0 +1,82 @@
+.page-about {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.page-about__hero {
+  text-align: center;
+  padding: var(--spacing-3xl) 0;
+  margin-bottom: var(--spacing-3xl);
+}
+
+.page-about__avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: var(--border-radius-full);
+  object-fit: cover;
+  margin-bottom: var(--spacing-lg);
+  border: 4px solid var(--color-primary);
+}
+
+.page-about__name {
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--spacing-sm);
+}
+
+.page-about__bio {
+  color: var(--color-text-light);
+  font-size: var(--font-size-lg);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.page-about__section {
+  margin-bottom: var(--spacing-3xl);
+}
+
+.page-about__section-title {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-xl);
+  text-align: center;
+}
+
+.page-about__skills {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-lg);
+}
+
+.page-about__contact {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.page-about__contact-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--border-radius-md);
+  color: var(--color-text);
+  transition: background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+}
+
+.page-about__contact-item:hover {
+  background-color: var(--color-primary);
+  color: white;
+  transform: translateY(-3px);
+}
+
+@media (max-width: 768px) {
+  .page-about__skills {
+    grid-template-columns: 1fr;
+  }
+
+  .page-about__contact {
+    flex-direction: column;
+    align-items: center;
+  }
+}

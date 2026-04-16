@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="个人博客 - 分享前端开发技术与心得">
+  <title>首页 - 个人博客</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body data-page="home" class="page">
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="header__logo">
+        <span class="header__logo-icon">B</span>
+        <span>个人博客</span>
+      </a>
+      
+      <nav class="header__nav">
+        <ul class="header__nav-list">
+          <li class="header__nav-item">
+            <a href="index.html" class="header__nav-link header__nav-link--active">首页</a>
+          </li>
+          <li class="header__nav-item">
+            <a href="pages/articles.html" class="header__nav-link">文章</a>
+          </li>
+          <li class="header__nav-item">
+            <a href="pages/about.html" class="header__nav-link">关于我</a>
+          </li>
+        </ul>
+      </nav>
+      
+      <div class="header__actions">
+        <button class="header__search-btn" aria-label="搜索">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        
+        <button class="header__theme-toggle" aria-label="切换主题">
+          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        
+        <button class="header__menu-btn" aria-label="菜单">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+  
+  <main class="main">
+    <div class="container">
+      <section class="page-home__carousel">
+        <div class="carousel">
+          <div class="carousel__track">
+            <div class="carousel__slide">
+              <img src="https://picsum.photos/1200/675?random=101" alt="精选文章1" class="carousel__image">
+              <div class="carousel__content">
+                <h2 class="carousel__title">深入理解 JavaScript 异步编程</h2>
+                <p class="carousel__excerpt">探索 Promise、async/await 的核心原理与最佳实践</p>
+                <a href="pages/detail.html?id=1" class="carousel__link">阅读文章</a>
+              </div>
+            </div>
+            <div class="carousel__slide">
+              <img src="https://picsum.photos/1200/675?random=102" alt="精选文章2" class="carousel__image">
+              <div class="carousel__content">
+                <h2 class="carousel__title">CSS Grid 布局完全指南</h2>
+                <p class="carousel__excerpt">掌握现代网页布局的强大工具</p>
+                <a href="pages/detail.html?id=2" class="carousel__link">阅读文章</a>
+              </div>
+            </div>
+            <div class="carousel__slide">
+              <img src="https://picsum.photos/1200/675?random=103" alt="精选文章3" class="carousel__image">
+              <div class="carousel__content">
+                <h2 class="carousel__title">Web 性能优化技巧</h2>
+                <p class="carousel__excerpt">打造更快速、更流畅的用户体验</p>
+                <a href="pages/detail.html?id=4" class="carousel__link">阅读文章</a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="carousel__controls">
+            <button class="carousel__btn carousel__btn--prev" aria-label="上一张">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <button class="carousel__btn carousel__btn--next" aria-label="下一张">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+          
+          <div class="carousel__indicators">
+            <button class="carousel__indicator carousel__indicator--active" data-index="0"></button>
+            <button class="carousel__indicator" data-index="1"></button>
+            <button class="carousel__indicator" data-index="2"></button>
+          </div>
+        </div>
+      </section>
+      
+      <section class="page-home__section">
+        <div class="page-home__section-header">
+          <h2 class="page-home__section-title">最新文章</h2>
+          <a href="pages/articles.html" class="page-home__section-link">
+            查看全部
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="page-home__articles">
+        </div>
+      </section>
+    </div>
+  </main>
+  
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__content">
+        <p class="footer__copyright">
+          &copy; 2026 个人博客. All rights reserved.
+        </p>
+        <div class="footer__social">
+          <a href="#" class="footer__social-link" aria-label="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </a>
+          <a href="#" class="footer__social-link" aria-label="微博">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10.098 20.323c-3.977.391-7.414-1.406-7.672-4.02-.259-2.609 2.759-5.047 6.74-5.441 3.979-.394 7.413 1.404 7.671 4.018.259 2.6-2.759 5.049-6.739 5.443zm7.098-9.921c-.266-.078-.449-.131-.311-.472.305-.729.336-1.358.001-1.806-.627-.839-2.343-.795-4.311-.023 0 0-.618.27-.46-.218.301-.946.256-1.738-.214-2.197-.988-.966-3.615.091-5.863 2.36-1.686 1.703-2.663 3.511-2.663 5.077 0 2.992 3.836 4.813 7.587 4.813 4.917 0 8.191-2.857 8.191-5.126 0-1.371-1.155-2.149-1.957-2.408zm4.449-6.812c-1.568-1.744-3.881-2.406-6.074-2.026-.478.083-.79.539-.707 1.018.083.478.539.79 1.018.707 1.615-.28 3.313.205 4.468 1.489 1.154 1.284 1.453 3.025.941 4.582-.151.46.1.958.561 1.109.46.151.958-.1 1.109-.561.696-2.123.29-4.494-1.316-6.318zm-1.495 2.426c-.784-.872-1.941-1.203-3.037-1.013-.393.068-.654.444-.586.838.068.393.444.654.838.586.647-.112 1.327.082 1.788.595.46.512.574 1.206.357 1.827-.131.375.067.787.442.918.375.131.787-.067.918-.442.36-1.031.171-2.182-.72-3.309z"/>
+            </svg>
+          </a>
+          <a href="#" class="footer__social-link" aria-label="邮箱">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  <div class="search-modal">
+    <div class="search-modal__content">
+      <div class="search-modal__header">
+        <input type="text" class="search-modal__input" placeholder="搜索文章...">
+        <button class="search-modal__close" aria-label="关闭">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="search-modal__results"></div>
+    </div>
+  </div>
+  
+  <button class="back-to-top" aria-label="返回顶部">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+  
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
