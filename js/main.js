@@ -2,22 +2,23 @@
  * 主入口文件
  * 初始化所有模块
  */
-import { Carousel } from './modules/carousel.js';
-import { Navigation } from './modules/navigation.js';
-import { Search } from './modules/search.js';
-import { Pagination } from './modules/pagination.js';
-import { TableOfContents } from './modules/toc.js';
-import { BackToTop } from './modules/back-to-top.js';
-import { ThemeToggle } from './modules/theme.js';
-import { LazyLoad } from './modules/lazyload.js';
-import { Skeleton } from './modules/skeleton.js';
+import { Carousel } from '../modules/carousel.js';
+import { Navigation } from '../modules/navigation.js';
+import { Search } from '../modules/search.js';
+import { Pagination } from '../modules/pagination.js';
+import { TableOfContents } from '../modules/toc.js';
+import { BackToTop } from '../modules/back-to-top.js';
+import { ThemeToggle } from '../modules/theme.js';
+import { LazyLoad } from '../modules/lazyload.js';
+import { Skeleton } from '../modules/skeleton.js';
 import { articles, getArticles, getArticleById, getRelatedArticles, categories, tags, recommendedArticles } from './data.js';
 
 const APP_STATE = {
   currentPage: 1,
   currentCategory: null,
   currentTag: null,
-  searchKeyword: null
+  searchKeyword: null,
+  paginationInstance: null
 };
 
 /**
@@ -188,6 +189,7 @@ function renderSidebar() {
 function renderArticlesList() {
   const container = document.querySelector('.page-articles__list');
   const paginationContainer = document.querySelector('.pagination');
+  const articleCountEl = document.querySelector('#article-count');
   
   if (!container) return;
   
@@ -199,19 +201,31 @@ function renderArticlesList() {
     keyword: APP_STATE.searchKeyword
   });
   
+  if (articleCountEl) {
+    articleCountEl.textContent = result.total;
+  }
+  
   const html = result.data.map(article => createArticleCardHorizontal(article)).join('');
   container.innerHTML = html;
   
   if (paginationContainer) {
-    new Pagination(paginationContainer, {
-      totalItems: result.total,
-      itemsPerPage: 10,
-      currentPage: APP_STATE.currentPage
-    }, (page) => {
-      APP_STATE.currentPage = page;
-      renderArticlesList();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    if (APP_STATE.paginationInstance) {
+      APP_STATE.paginationInstance.update({
+        totalItems: result.total,
+        itemsPerPage: 10,
+        currentPage: APP_STATE.currentPage
+      });
+    } else {
+      APP_STATE.paginationInstance = new Pagination(paginationContainer, {
+        totalItems: result.total,
+        itemsPerPage: 10,
+        currentPage: APP_STATE.currentPage
+      }, (page) => {
+        APP_STATE.currentPage = page;
+        renderArticlesList();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
   }
   
   new LazyLoad();
