@@ -208,7 +208,9 @@ export class Carousel {
    */
   startAutoPlay() {
     this.stopAutoPlay();
-    this.autoPlayTimer = setInterval(() => this.next(), this.options.interval);
+    this.autoPlayTimer = setInterval(() => {
+      this.next();
+    }, this.options.interval);
   }
   
   /**

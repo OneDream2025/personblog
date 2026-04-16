@@ -2,15 +2,15 @@
  * 主入口文件
  * 初始化所有模块
  */
-import { Carousel } from './modules/carousel.js';
-import { Navigation } from './modules/navigation.js';
-import { Search } from './modules/search.js';
-import { Pagination } from './modules/pagination.js';
-import { TableOfContents } from './modules/toc.js';
-import { BackToTop } from './modules/back-to-top.js';
-import { ThemeToggle } from './modules/theme.js';
-import { LazyLoad } from './modules/lazyload.js';
-import { Skeleton } from './modules/skeleton.js';
+import { Carousel } from '../modules/carousel.js';
+import { Navigation } from '../modules/navigation.js';
+import { Search } from '../modules/search.js';
+import { Pagination } from '../modules/pagination.js';
+import { TableOfContents } from '../modules/toc.js';
+import { BackToTop } from '../modules/back-to-top.js';
+import { ThemeToggle } from '../modules/theme.js';
+import { LazyLoad } from '../modules/lazyload.js';
+import { Skeleton } from '../modules/skeleton.js';
 import { articles, getArticles, getArticleById, getRelatedArticles, categories, tags, recommendedArticles } from './data.js';
 
 const APP_STATE = {
@@ -19,6 +19,12 @@ const APP_STATE = {
   currentTag: null,
   searchKeyword: null
 };
+
+/**
+ * 分页实例缓存
+ * @type {Pagination|null}
+ */
+let paginationInstance = null;
 
 /**
  * 初始化应用
@@ -188,6 +194,7 @@ function renderSidebar() {
 function renderArticlesList() {
   const container = document.querySelector('.page-articles__list');
   const paginationContainer = document.querySelector('.pagination');
+  const articleCountElement = document.getElementById('article-count');
   
   if (!container) return;
   
@@ -199,19 +206,38 @@ function renderArticlesList() {
     keyword: APP_STATE.searchKeyword
   });
   
+  if (articleCountElement) {
+    articleCountElement.textContent = result.total;
+  }
+  
+  if (result.data.length === 0) {
+    container.innerHTML = '<div class="page-articles__empty">暂无文章</div>';
+    if (paginationContainer) {
+      paginationContainer.innerHTML = '';
+    }
+    return;
+  }
+  
   const html = result.data.map(article => createArticleCardHorizontal(article)).join('');
   container.innerHTML = html;
   
   if (paginationContainer) {
-    new Pagination(paginationContainer, {
-      totalItems: result.total,
-      itemsPerPage: 10,
-      currentPage: APP_STATE.currentPage
-    }, (page) => {
-      APP_STATE.currentPage = page;
-      renderArticlesList();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    if (paginationInstance) {
+      paginationInstance.update({
+        totalItems: result.total,
+        currentPage: APP_STATE.currentPage
+      });
+    } else {
+      paginationInstance = new Pagination(paginationContainer, {
+        totalItems: result.total,
+        itemsPerPage: 10,
+        currentPage: APP_STATE.currentPage
+      }, (page) => {
+        APP_STATE.currentPage = page;
+        renderArticlesList();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
   }
   
   new LazyLoad();
