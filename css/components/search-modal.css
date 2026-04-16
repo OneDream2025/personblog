@@ -100,3 +100,11 @@
   text-align: center;
   color: var(--color-text-muted);
 }
+
+.search-modal__result-title mark,
+.search-modal__result-excerpt mark {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 0 2px;
+  border-radius: 2px;
+}

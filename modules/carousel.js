@@ -166,6 +166,7 @@ export class Carousel {
    * 切换到下一张
    */
   next() {
+    if (this.slideCount === 0) return;
     this.goTo((this.currentIndex + 1) % this.slideCount);
   }
   
