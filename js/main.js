@@ -11,6 +11,8 @@ import { BackToTop } from '../modules/back-to-top.js';
 import { ThemeToggle } from '../modules/theme.js';
 import { LazyLoad } from '../modules/lazyload.js';
 import { Skeleton } from '../modules/skeleton.js';
+import { Like } from '../modules/like.js';
+import { History } from '../modules/history.js';
 import { articles, getArticles, getArticleById, getRelatedArticles, categories, tags, recommendedArticles } from './data.js';
 
 const APP_STATE = {
@@ -131,6 +133,7 @@ function renderLatestArticles() {
   
   container.innerHTML = html;
   new LazyLoad();
+  initLikeButtons();
 }
 
 /**
@@ -149,6 +152,11 @@ function renderSidebar() {
   const categoriesContainer = document.querySelector('.sidebar__categories');
   const tagsContainer = document.querySelector('.sidebar__tags');
   const recommendedContainer = document.querySelector('.sidebar__recommended');
+  const historyContainer = document.querySelector('.sidebar__history');
+  
+  if (historyContainer) {
+    new History(historyContainer);
+  }
   
   if (categoriesContainer) {
     const html = categories.map(cat => `
@@ -228,6 +236,7 @@ function renderArticlesList() {
   }
   
   new LazyLoad();
+  initLikeButtons();
 }
 
 /**
@@ -280,6 +289,48 @@ function initFilters() {
 }
 
 /**
+ * 初始化点赞按钮事件
+ */
+function initLikeButtons() {
+  const likeElements = document.querySelectorAll('.like[data-article-id]');
+  likeElements.forEach(el => {
+    if (!el.dataset.initialized) {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const articleId = parseInt(el.dataset.articleId);
+        const isLiked = el.classList.contains('like--active');
+        const countEl = el.querySelector('.like__count');
+        const iconEl = el.querySelector('.like__icon');
+        
+        let currentCount = parseInt(countEl.textContent);
+        
+        if (isLiked) {
+          currentCount = Math.max(0, currentCount - 1);
+          el.classList.remove('like--active');
+          iconEl.textContent = '🤍';
+          Like.updateUserLikeStatus(articleId, false);
+        } else {
+          currentCount++;
+          el.classList.add('like--active');
+          el.classList.add('like--animating');
+          setTimeout(() => el.classList.remove('like--animating'), 400);
+          iconEl.textContent = '❤️';
+          Like.updateUserLikeStatus(articleId, true);
+        }
+        
+        countEl.textContent = currentCount;
+        Like.saveLikeCount(articleId, currentCount);
+        Like.updateAllInstances(articleId, currentCount, !isLiked);
+      });
+      
+      el.dataset.initialized = 'true';
+    }
+  });
+}
+
+/**
  * 初始化文章详情页
  */
 function initDetailPage() {
@@ -298,6 +349,8 @@ function initDetailPage() {
     return;
   }
   
+  History.addHistory(article);
+  
   renderArticleDetail(article);
   initTableOfContents();
   renderRelatedArticles(article.id);
@@ -312,6 +365,9 @@ function renderArticleDetail(article) {
   if (!container) return;
   
   document.title = `${article.title} - 个人博客`;
+  
+  const likeCount = Like.getLikeCount(article.id);
+  const isLiked = Like.isUserLiked(article.id);
   
   container.innerHTML = `
     <header class="article__header">
@@ -350,6 +406,12 @@ function renderArticleDetail(article) {
     <div class="article__content">
       ${parseMarkdown(article.content)}
     </div>
+    <div class="article__like">
+      <div class="like ${isLiked ? 'like--active' : ''}" data-article-id="${article.id}">
+        <span class="like__icon">${isLiked ? '❤️' : '🤍'}</span>
+        <span class="like__count">${likeCount}</span>
+      </div>
+    </div>
     <section class="article__related">
       <h3 class="article__related-title">相关文章</h3>
       <div class="grid grid--3 article__related-list"></div>
@@ -357,6 +419,7 @@ function renderArticleDetail(article) {
   `;
   
   new LazyLoad();
+  initLikeButtons();
 }
 
 /**
@@ -410,6 +473,7 @@ function renderRelatedArticles(articleId) {
   
   container.innerHTML = html;
   new LazyLoad();
+  initLikeButtons();
 }
 
 /**
@@ -459,6 +523,9 @@ function getArticleUrl(url) {
  * @returns {string} HTML 字符串
  */
 function createArticleCard(article) {
+  const likeCount = Like.getLikeCount(article.id);
+  const isLiked = Like.isUserLiked(article.id);
+  
   return `
     <article class="card">
       <div class="card__image-wrapper">
@@ -488,6 +555,12 @@ function createArticleCard(article) {
             ${article.views}
           </span>
         </div>
+        <div class="card__like" data-like-container="${article.id}">
+          <div class="like ${isLiked ? 'like--active' : ''}" data-article-id="${article.id}">
+            <span class="like__icon">${isLiked ? '❤️' : '🤍'}</span>
+            <span class="like__count">${likeCount}</span>
+          </div>
+        </div>
       </div>
     </article>
   `;
@@ -499,6 +572,9 @@ function createArticleCard(article) {
  * @returns {string} HTML 字符串
  */
 function createArticleCardHorizontal(article) {
+  const likeCount = Like.getLikeCount(article.id);
+  const isLiked = Like.isUserLiked(article.id);
+  
   return `
     <article class="card card--horizontal">
       <div class="card__image-wrapper">
@@ -527,6 +603,12 @@ function createArticleCardHorizontal(article) {
             </svg>
             ${article.views}
           </span>
+        </div>
+        <div class="card__like" data-like-container="${article.id}">
+          <div class="like ${isLiked ? 'like--active' : ''}" data-article-id="${article.id}">
+            <span class="like__icon">${isLiked ? '❤️' : '🤍'}</span>
+            <span class="like__count">${likeCount}</span>
+          </div>
         </div>
       </div>
     </article>

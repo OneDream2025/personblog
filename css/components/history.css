@@ -1,0 +1,104 @@
+.history {
+  background-color: var(--color-bg);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.history__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.history__title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+
+.history__clear {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.history__clear:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-primary);
+}
+
+.history__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.history__item {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  transition: background-color var(--transition-fast);
+}
+
+.history__item:hover {
+  background-color: var(--color-bg-secondary);
+}
+
+.history__item-image {
+  width: 60px;
+  height: 45px;
+  border-radius: var(--border-radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.history__item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.history__item-title {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  margin-bottom: var(--spacing-xs);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history__item-title a {
+  color: var(--color-text);
+}
+
+.history__item-title a:hover {
+  color: var(--color-primary);
+}
+
+.history__item-time {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.history__empty {
+  text-align: center;
+  padding: var(--spacing-lg);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+@media (max-width: 1024px) {
+  .history {
+    margin-bottom: var(--spacing-md);
+  }
+}
