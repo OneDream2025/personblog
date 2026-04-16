@@ -1,0 +1,248 @@
+/**
+ * 点赞组件样式
+ * Like Component Styles
+ */
+
+/* 基础点赞按钮 */
+.like {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  cursor: pointer;
+  user-select: none;
+  transition: transform var(--transition-fast);
+}
+
+.like:hover {
+  transform: scale(1.05);
+}
+
+.like__icon {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: all var(--transition-fast);
+}
+
+.like__count {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast);
+}
+
+/* 点赞状态 - 已点赞 */
+.like--active .like__icon {
+  fill: var(--color-accent);
+  stroke: var(--color-accent);
+}
+
+.like--active .like__count {
+  color: var(--color-accent);
+}
+
+/* 点击动画 */
+.like--animating {
+  animation: like-bounce 0.3s ease;
+}
+
+@keyframes like-bounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 文章卡片中的点赞 - 小型 */
+.card__like {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  background-color: var(--color-bg-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.card__like:hover {
+  background-color: var(--color-bg-tertiary);
+}
+
+.card__like-icon {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: var(--color-text-muted);
+  stroke-width: 2;
+  transition: all var(--transition-fast);
+}
+
+.card__like-count {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* 卡片点赞激活状态 */
+.card__like--active {
+  background-color: rgba(231, 76, 60, 0.1);
+}
+
+.card__like--active .card__like-icon {
+  fill: var(--color-accent);
+  stroke: var(--color-accent);
+}
+
+.card__like--active .card__like-count {
+  color: var(--color-accent);
+}
+
+/* 卡片点赞动画 */
+.card__like--animating .card__like-icon {
+  animation: heart-beat 0.4s ease;
+}
+
+@keyframes heart-beat {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 文章详情页点赞 - 大型 */
+.article__like {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-bg-secondary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border: 2px solid transparent;
+}
+
+.article__like:hover {
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-border);
+}
+
+.article__like-icon {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: var(--color-text-muted);
+  stroke-width: 2;
+  transition: all var(--transition-fast);
+}
+
+.article__like-count {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--color-text-light);
+}
+
+.article__like-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* 详情页点赞激活状态 */
+.article__like--active {
+  background-color: rgba(231, 76, 60, 0.1);
+  border-color: var(--color-accent);
+}
+
+.article__like--active .article__like-icon {
+  fill: var(--color-accent);
+  stroke: var(--color-accent);
+}
+
+.article__like--active .article__like-count {
+  color: var(--color-accent);
+}
+
+.article__like--active .article__like-text {
+  color: var(--color-accent);
+}
+
+/* 详情页点赞动画 */
+.article__like--animating .article__like-icon {
+  animation: heart-pulse 0.5s ease;
+}
+
+@keyframes heart-pulse {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.3);
+  }
+  50% {
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 文章元信息区域点赞容器 */
+.article__meta-like {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .card__like {
+    padding: var(--spacing-xs);
+  }
+
+  .card__like-count {
+    font-size: 11px;
+  }
+
+  .article__like {
+    padding: var(--spacing-xs) var(--spacing-md);
+  }
+
+  .article__like-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .article__like-count {
+    font-size: var(--font-size-sm);
+  }
+
+  .article__like-text {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .card__meta {
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+}
